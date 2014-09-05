@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'capybara'
 require 'capybara/poltergeist'
 require 'active_support/time'
@@ -13,13 +15,11 @@ class EServices
   include Capybara::DSL
 
   BASE_URL = 'https://www.rit.edu/eservices/'
-  USERNAME = 'ffs3415'
-  PASSWORD = 'hanna-1RIT'
 
   MEAL_PLAN_END_DATE = Date.new(2014, 12, 18)
 
-  def call
-    auth(USERNAME, PASSWORD)
+  def call(username, password)
+    auth(username, password)
 
     visit BASE_URL
 
@@ -65,4 +65,4 @@ class EServices
   end
 end
 
-EServices.new.call
+EServices.new.call('ffs3415', 'hanna-1RIT')
