@@ -4,6 +4,9 @@ require 'capybara'
 require 'capybara/poltergeist'
 require 'active_support/time'
 require 'cape-cod'
+require 'dotenv'
+
+Dotenv.load!
 
 Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, phantomjs_logger: File.open(File::NULL, 'w'))
@@ -80,4 +83,4 @@ class ReportBalance
 end
 
 ReportBalance.new.call(
-  **EServices.new.call(username: ARGV[0], password: ARGV[1]))
+  **EServices.new.call(username: ENV['RIT_USERNAME'], password: ENV['RIT_PASSWORD']))
