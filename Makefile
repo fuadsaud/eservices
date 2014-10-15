@@ -1,2 +1,2 @@
 run:
-	ruby daily_meal.rb
+	bin/eservices
