@@ -18,22 +18,17 @@ class EServices
 
   MEAL_PLAN_END_DATE = Date.new(2014, 12, 18)
 
-  def call(username, password)
+  def call(username:, password:)
     auth(username, password)
 
     visit BASE_URL
 
     login
 
-    puts CapeCod.green "TOTAL BALANCE: $#{ debit_balance }"
-    puts CapeCod.red   "DAILY BALANCE: $#{ daily_balance }"
+    { total: debit_balance, remaining_days: remaining_days }
   end
 
   private
-
-  def daily_balance
-    debit_balance / remaining_days
-  end
 
   def debit_balance
     sleep 1
@@ -57,7 +52,7 @@ class EServices
   end
 
   def remaining_days
-    meal_plan_end_date - Date.tomorrow
+    (meal_plan_end_date - Date.tomorrow).to_i
   end
 
   def meal_plan_end_date
@@ -65,4 +60,24 @@ class EServices
   end
 end
 
-EServices.new.call('ffs3415', 'hanna-1RIT')
+class ReportBalance
+  def call(total:, remaining_days:)
+    puts CapeCod.blue "TOTAL BALANCE: #{ total }"
+    puts CapeCod.magenta "REMAINING DAYS: #{ remaining_days }"
+
+    daily = daily_balance(total, remaining_days)
+
+    color = daily < 18 ? :red : :green
+
+    puts CapeCod.public_send(color, daily)
+  end
+
+  private
+
+  def daily_balance(total, remaining_days)
+    total / remaining_days
+  end
+end
+
+ReportBalance.new.call(
+  **EServices.new.call(username: ARGV[0], password: ARGV[1]))
